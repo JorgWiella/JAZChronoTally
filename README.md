@@ -1,4 +1,5 @@
 ChronoTally
+
 ChronoTally is a WPF application for tracking work hours and calculating time balance. It allows users to input their daily work hours and descriptions, automatically calculating the total balance of hours (overtime or debt). Additionally, the application can generate weekly and monthly reports in Excel format.
 
 Features
@@ -12,16 +13,17 @@ Visual Studio 2019 or later
 EPPlus library for Excel operations
 Installation
 Clone the repository:
-
-sh
-Copy code
+```
 git clone https://github.com/your-username/chronotally.git
-Open the solution in Visual Studio:
+```
 
-sh
-Copy code
+Open the solution in Visual Studio:
+```
 cd chronotally
 start ChronoTally.sln
+```
+
+
 Restore NuGet packages:
 
 In Visual Studio, go to Tools > NuGet Package Manager > Manage NuGet Packages for Solution, then click Restore to download the necessary packages.
