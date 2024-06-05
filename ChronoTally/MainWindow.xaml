@@ -1,0 +1,57 @@
+﻿<Window
+    x:Class="ChronoTally.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="ChronoTally"
+    Width="700"
+    Height="500">
+    <Grid>
+        <StackPanel Margin="20">
+            <TextBlock Margin="0,0,0,10" Text="Start Time (From):" />
+            <TextBox Name="txtStartTime" Margin="0,0,0,20" />
+
+            <TextBlock Margin="0,0,0,10" Text="Finish Time (Until):" />
+            <TextBox Name="txtFinishTime" Margin="0,0,0,20" />
+
+            <TextBlock Margin="0,0,0,10" Text="Description:" />
+            <TextBox Name="txtDescription" Margin="0,0,0,20" />
+
+            <Button
+                Width="100"
+                Margin="0,0,0,20"
+                HorizontalAlignment="Left"
+                Click="BtnAddEntry_Click"
+                Content="Add Entry" />
+            <Button
+                Width="100"
+                Margin="0,0,0,10"
+                HorizontalAlignment="Left"
+                Click="BtnSaveToExcel_Click"
+                Content="Save to Excel" />
+            <Button
+                Width="100"
+                Margin="0,0,0,10"
+                HorizontalAlignment="Left"
+                Click="BtnLoadFromExcel_Click"
+                Content="Load from Excel" />
+            <Button
+                Width="150"
+                Margin="0,0,0,10"
+                HorizontalAlignment="Left"
+                Click="BtnGenerateWeeklyReport_Click"
+                Content="Generate Weekly Report" />
+            <Button
+                Width="150"
+                Margin="0,0,0,10"
+                HorizontalAlignment="Left"
+                Click="BtnGenerateMonthlyReport_Click"
+                Content="Generate Monthly Report" />
+
+            <TextBlock Margin="20,0,0,10" Text="Time Balance:" />
+            <TextBlock
+                Name="lblTimeBalance"
+                FontSize="16"
+                FontWeight="Bold" />
+        </StackPanel>
+    </Grid>
+</Window>

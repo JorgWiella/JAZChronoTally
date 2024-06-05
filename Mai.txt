@@ -1,0 +1,196 @@
+
+-Hours at end of Month, April   :  +6
+
+-May 1st Week
+01/05 : 
+FeierTag
+
+
+02/05 :  +1   
+Morgen Meeting. Überprüfung der aktuellen Datenbankstruktur und Abgleich mit dem geplanten Datenmodell
+
+Anpassung des Datenmodells basierend auf den Anforderungen und Entscheidungen aus den Dokumentationen
+
+
+03/05 :   -2.5
+Morgen Meeting. Aktualisierung der Exportkonfigurationen in unserem Export-Tool gemäß den neuen DB Anforderungen
+
+Export-Tool Meeting mit JI und DB
+
+
+-Hours at end of 1st Week, May :  +4.5
+
+
+-May 2nd Week
+
+06/05 : - 2 (9in - 12.30(30min) - 15.30out)
+Morgen Meeting. Entwicklung von SQL-Abfragen zum Exportieren der spezifizierten Daten aus den Datenbanken 
+
+Habe mich mit der Implementierung von Sicherheitsmaßnahmen für den Zugriff auf exportierte Daten befasst, einschließlich Authentifizierung und Autorisierung
+
+
+07/05 : -2 (8.30in - 11(30min) - 15out)
+Morgen Meeting. Über SQL-Subqueries gelernt: wie man Subqueries in SQL verwendet, um Daten effektiver abzurufen und zu manipulieren
+
+Über verschiedene Strategien zur Einrichtung von Datenbank-Backups und Notfallwiederherstellungsplänen gelesen, um die Datenintegrität zu gewährleisten
+
+
+08/05 : +1 (7in - 12.30(60min) - 17out)
+Morgen Meeting. Erstellung von Klassen und Methoden im Datenzugriffsschicht, um die Datenbankabfragen zu verarbeiten 
+
+Meeting zur Gestaltung einer benutzerfreundlichen Oberfläche für das Exporttool, wobei der Fokus auf Benutzerfreundlichkeit und Zugänglichkeit lag
+
+
+09/05 : 
+Feiertag
+
+
+10/05 : -3.5 (9in - 12(30min) - 14out)
+Übungen zur Verwendung von SQL WHERE-, HAVING- und LIKE-Klauseln durchgeführt, um Daten nach spezifischen Kriterien zu filtern
+
+Techniken zum Logging und zur Überwachung studiert, um Datenbankaktivitäten zu verfolgen und potenzielle Probleme frühzeitig zu erkennen
+
+
+
+-Hours at end of 2nd Week, May : -2
+
+
+
+-May 3rd Week
+
+13/05 : 
+Berufsschule (ITT- AEuP - FU-IT)
+
+14/05 : 
+Berufsschule (PlusD - AEuP- ITS - Englisch)
+
+15/05 : 
+Abwesenheit wegen wichtiger Behördentermine
+
+16/05 : 
+Berufsschule (ITT - BWP - Englisch - PuG)
+
+17/05 : 
+Berufsschule (Englisch - BWP - AEuP)
+
+
+-Hours at end of 3rd Week, May : -2
+
+
+
+-May 4th Week
+
+20/05 : 
+Feiertag
+
+
+21/05 : +1.5 (9in - 11.30(30min) - 19out)
+Morgen Meeting. Über das Model-View-ViewModel (MVVM)-Muster gelesen, um dessen Vorteile und Anwendung in der Anwendungsentwicklung zu verstehen
+
+Erstellung von Klassen und Methoden im Datenzugriffsschicht, um die Datenbankabfragen zu verarbeiten
+
+
+22/05 : -1 (9in - 13.30(60min) - 17out)
+Meeting, um sicherzustellen, dass wir beim Exportieren von Daten aus Kundendatenbanken alle Datenschutzvorschriften einhalten
+
+Dokumentation der Datenbankstruktur und der SQL-Abfragen für zukünftige Referenz und Wartung(IF Export-Tool)
+
+
+23/05 : +1.5 (8.30in - 13(30min) - 18.30out)
+Morgen Meeting. Durchführung von Tests, um sicherzustellen, dass die Datenbankabfragen korrekt funktionieren und die erwarteten Ergebnisse liefern
+
+Über die Bedeutung und Best Practices von Code-Reviews gelesen, um die Codequalität und -sicherheit zu gewährleisten
+
+
+24/05 : -3 (8.30in - 13(30min) - 14out)
+Morgen Meeting. Vorbereitung der Benutzeroberfläche, um die Ergebnisse der SQL-Abfragen anzuzeigen und die Benutzerinteraktion zu ermöglichen
+
+Wie man Relay Commands in C# implementiert und in der MVVM-Architektur für die Steuerung der Bindung verwendet (IF Export-Tool)
+
+
+-Hours at end of 4th Week, May : -3
+
+
+-May 5th Week
+
+27/05 : +0.5 (9in - 13(30min) - 18out)
+Morgen Meeting. Über die Zugriffsmodifikatoren in C# habe ich mehr erfahren, um die Kapselung und Zugriffskontrolle im Projekt zu verbessern
+
+Integration der exportierten Daten in die lokale Entwicklungsumgebung und Validierung der Datenintegrität (IF Export-Tool)
+
+
+
+28/05 :  (9in - 12.30(30min) - 17.30out)
+Morgen Meeting. Verschiedene Methoden der Benutzer-Authentifizierung studiert, um den Zugriff auf die exportierten Daten abzusichern
+
+Relay Commands in C# implementiert: Die Verwendung von Relay Commands in der MVVM-Architektur wurde gelernt und geübt
+
+
+
+29/05 : +3 (7in - 12(60min) - 19out)
+Morgen Meeting. Über Praktiken zur CI/CD gelernt, um die Tests und Bereitstellung des Exporttools zu automatisieren
+
+Über Techniken zur Datenverschlüsselung gelesen, um sensible Daten während des Exports und der Speicherung zu schützen
+
+Meeting, um die Anforderungen der Kunden an das Exporttool zu erfassen und Export Tool Benutzerhandbuch dokumentiert      
+
+
+
+30/05 :
+Feiertag
+
+
+
+31/05 : +2 (7in - 12.30(60min) - 18out)
+Morgen Meeting.Übungen zur Verwendung von SQL-Aggregatfunktionen (SUM, COUNT, AVG) durchgeführt, um Berichte und Zusammenfassungen zu erstellen
+
+Unterschiede zwischen internen und privaten Klassen in C# gelernt: Kapselung und Zugriffskontrolle im Projekt zu verbessern
+
+Optimierung von SQL-Abfragen geübt: Techniken zur Verbesserung der Leistung und Effizienz von SQL-Abfragen wurden studiert
+
+
+-Hours at end of 5th Week, May : +1.5
+
+
+
+
+
+
+
+
+
+
+Übungen zu verschiedenen Arten von SQL-Joins (INNER, LEFT, RIGHT, FULL) durchgeführt, um deren Anwendungsfälle zu verstehen
+
+Teilnahme an einem Datenschutz-Meeting: wie wir beim Exportieren von Daten alle Datenschutzvorschriften einhalten können
+
+Übungen zur Ausnahmebehandlung durchgeführt: Die Implementierung von Ausnahmebehandlungen in C# habe ich praktiziert, um die Fehlerbehandlung zu optimieren.
+
+Verwendung von SQL-Subqueries studiert: Subqueries in SQL wurden durchgenommen, um effektivere Datenabfragen zu ermöglichen.
+
+Strategien für Daten-Backups erarbeitet: Verschiedene Methoden zur Sicherstellung der Datenintegrität durch Backups und Notfallwiederherstellung wurden gelesen und diskutiert.
+
+Besprechung zur Benutzeroberflächengestaltung: Eine benutzerfreundliche Oberfläche für das Exporttool wurde gemeinsam entworfen, mit Fokus auf Usability und Zugänglichkeit.
+
+Datenfilterung mit SQL geübt: Die Anwendung von WHERE-, HAVING- und LIKE-Klauseln wurde geübt, um spezifische Daten herauszufiltern.
+
+Zusätzliche Aufgaben
+Logging und Überwachung studiert: Methoden zur Protokollierung und Überwachung von Datenbankaktivitäten wurden gelernt, um Probleme frühzeitig zu erkennen.
+
+Konfiguration automatisierter Export-Jobs: Techniken zur Einrichtung regelmäßiger Datenbankaktualisierungen wurden gelernt und geübt.
+
+Best Practices für Code-Reviews gelesen: Die Bedeutung und Umsetzung von Code-Reviews wurden vertieft, um die Qualität und Sicherheit des Codes zu gewährleisten.
+
+Projektdokumentation geplant: Ein Meeting zur Erstellung umfassender und benutzerfreundlicher Dokumentation für das Exporttool wurde durchgeführt.
+
+SQL-Joins intensiv geübt: Verschiedene Arten von SQL-Joins (INNER, LEFT, RIGHT, FULL) wurden durchgenommen und in praktischen Übungen angewendet.
+
+Methoden der Benutzer-Authentifizierung gelernt: Verschiedene Ansätze zur Sicherung des Zugriffs auf die exportierten Daten wurden studiert.
+
+Kontinuierliche Integration und Bereitstellung (CI/CD) vertieft: Praktiken zur Automatisierung von Tests und Bereitstellungen wurden durchgenommen und geübt.
+
+Datenverschlüsselungstechniken gelesen: Methoden zur Verschlüsselung sensibler Daten während des Exports und der Speicherung wurden studiert.
+
+Kundenanforderungen im Meeting erfasst: Anforderungen der Kunden an das Exporttool wurden besprochen und dokumentiert, um sicherzustellen, dass alle Bedürfnisse erfüllt werden.
+
+Datenaggregation mit SQL geübt: Die Verwendung von SQL-Aggregatfunktionen (SUM, COUNT, AVG) zur Erstellung von Berichten und Zusammenfassungen wurde praktiziert.

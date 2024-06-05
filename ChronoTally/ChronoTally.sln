@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Views", "Views", "{B7F13992-5AF2-4530-A43C-D83FF3100FA5}"
+	ProjectSection(SolutionItems) = preProject
+		MainWindow.xaml = MainWindow.xaml
+		MainWindow.xaml.cs = MainWindow.xaml.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ViewModels", "ViewModels", "{CF144C8C-BBD6-4453-B7F2-0F16B1A1B85A}"
+	ProjectSection(SolutionItems) = preProject
+		MainViewModel.cs = MainViewModel.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Models", "Models", "{1A0C3AA5-44F1-4027-BAF5-5350DB98E9A0}"
+	ProjectSection(SolutionItems) = preProject
+		WorkEntry.cs = WorkEntry.cs
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {068A9D23-A4B0-42F1-A52F-1A99533B014D}
+	EndGlobalSection
+EndGlobal
