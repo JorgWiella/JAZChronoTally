@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Globalization;
 using System.Windows;
+using System.Collections.Generic;
+using ChronoTally.Models;
 
 namespace ChronoTally.ViewModels
 {
@@ -45,7 +47,7 @@ namespace ChronoTally.ViewModels
             GenerateWeeklyReportCommand = new RelayCommand(GenerateWeeklyReport);
             GenerateMonthlyReportCommand = new RelayCommand(GenerateMonthlyReport);
 
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
         }
 
         private void AddEntry(object parameter)
@@ -158,9 +160,15 @@ namespace ChronoTally.ViewModels
                                 })
                                 .ToList();
 
-                var groupedEntries = period == TimePeriod.Week
-                    ? entries.GroupBy(e => CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(e.Date, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
-                    : entries.GroupBy(e => new { e.Date.Year, e.Date.Month });
+                IEnumerable<IGrouping<object, dynamic>> groupedEntries = null;
+                if (period == TimePeriod.Week)
+                {
+                    groupedEntries = entries.GroupBy(e => (object)CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(e.Date, CalendarWeekRule.FirstDay, DayOfWeek.Monday));
+                }
+                else if (period == TimePeriod.Month)
+                {
+                    groupedEntries = entries.GroupBy(e => (object)new { e.Date.Year, e.Date.Month });
+                }
 
                 string reportFilePath = period == TimePeriod.Week ? "WeeklyReport.xlsx" : "MonthlyReport.xlsx";
                 FileInfo reportFile = new FileInfo(reportFilePath);
@@ -171,7 +179,15 @@ namespace ChronoTally.ViewModels
                     int row = 1;
                     foreach (var group in groupedEntries)
                     {
-                        reportSheet.Cells[row, 1].Value = period == TimePeriod.Week ? $"Week {group.Key}" : $"{group.Key.Year}-{group.Key.Month}";
+                        if (period == TimePeriod.Week)
+                        {
+                            reportSheet.Cells[row, 1].Value = $"Week {group.Key}";
+                        }
+                        else if (period == TimePeriod.Month)
+                        {
+                            var key = (dynamic)group.Key;
+                            reportSheet.Cells[row, 1].Value = $"{key.Year}-{key.Month}";
+                        }
                         reportSheet.Cells[row, 2].Value = group.Sum(e => e.HoursWorked);
                         row++;
                     }
@@ -219,8 +235,8 @@ namespace ChronoTally.ViewModels
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
     }
 }
