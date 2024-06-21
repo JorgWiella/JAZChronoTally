@@ -19,5 +19,10 @@ namespace ChronoTally.Views
             InitializeComponent();
             DataContext = new MainViewModel();
         }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
