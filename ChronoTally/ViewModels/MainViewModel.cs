@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Globalization;
 using System.Windows;
-using System.Collections.Generic;
 using ChronoTally.Models;
 
 namespace ChronoTally.ViewModels
@@ -16,6 +15,17 @@ namespace ChronoTally.ViewModels
     public class MainViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<WorkEntry> WorkEntries { get; set; } = new ObservableCollection<WorkEntry>();
+
+        private DateTime _newEntryDate;
+        public DateTime NewEntryDate
+        {
+            get => _newEntryDate;
+            set
+            {
+                _newEntryDate = value;
+                OnPropertyChanged();
+            }
+        }
 
         private double _totalHours;
         public double TotalHours
@@ -41,7 +51,7 @@ namespace ChronoTally.ViewModels
 
         public MainViewModel()
         {
-            AddEntryCommand = new RelayCommand(AddEntry);
+            AddEntryCommand = new RelayCommand(AddEntry, CanAddEntry);
             SaveToExcelCommand = new RelayCommand(SaveToExcel);
             LoadFromExcelCommand = new RelayCommand(LoadFromExcel);
             GenerateWeeklyReportCommand = new RelayCommand(GenerateWeeklyReport);
@@ -50,13 +60,33 @@ namespace ChronoTally.ViewModels
             OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
         }
 
+        private bool CanAddEntry(object parameter)
+        {
+            // Add validation logic here if needed
+            return true;
+        }
+
         private void AddEntry(object parameter)
         {
-            if (parameter is WorkEntry entry)
+            // Check if StartTimeTextBox, FinishTimeTextBox, and DescriptionTextBox are bindable properties in your XAML
+            // For simplicity, assuming these are TextBox controls bound to ViewModel properties in the XAML
+            var newEntry = new WorkEntry
             {
-                WorkEntries.Add(entry);
-                TotalHours += entry.HoursWorked;
-            }
+                Date = NewEntryDate,
+                StartTime = TimeSpan.Parse("08:00"), // Replace with actual parsing logic based on your UI bindings
+                FinishTime = TimeSpan.Parse("17:00"), // Replace with actual parsing logic based on your UI bindings
+                Description = "Sample description" // Replace with actual binding from DescriptionTextBox.Text
+            };
+
+            WorkEntries.Add(newEntry);
+            TotalHours += newEntry.HoursWorked;
+
+            // Clear fields after adding entry
+            NewEntryDate = DateTime.Today; // Resets the DatePicker
+            // Optionally, reset the TextBox values if they are bindable properties
+            // StartTimeTextBox = "";
+            // FinishTimeTextBox = "";
+            // DescriptionTextBox = "";
         }
 
         private void SaveToExcel(object parameter)
