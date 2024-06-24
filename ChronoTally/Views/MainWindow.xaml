@@ -5,7 +5,7 @@
     xmlns:local="clr-namespace:ChronoTally.ViewModels"
     Title="ChronoTally"
     Width="1150"
-    Height="550"
+    Height="450"
     Background="#333333"
     FontSize="14"
     Foreground="White">
@@ -45,8 +45,12 @@
             Margin="10"
             Orientation="Vertical">
             <StackPanel Margin="10,10,10,30" Orientation="Horizontal">
-                <TextBlock Text="Date: " VerticalAlignment="Center" />
-                <DatePicker Name="DateDatePicker" SelectedDate="{Binding NewEntryDate}" VerticalContentAlignment="Center" />
+                <TextBlock VerticalAlignment="Center" Text="Date: " />
+                <DatePicker
+                    Name="DateDatePicker"
+                    VerticalContentAlignment="Center"
+                    Language="en-DE"
+                    SelectedDate="{Binding NewEntryDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock VerticalAlignment="Center" Text="      From: " />
                 <TextBox
                     Name="StartTimeTextBox"

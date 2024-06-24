@@ -16,7 +16,7 @@ namespace ChronoTally.ViewModels
     {
         public ObservableCollection<WorkEntry> WorkEntries { get; set; } = new ObservableCollection<WorkEntry>();
 
-        private DateTime _newEntryDate;
+        private DateTime _newEntryDate = DateTime.Today;
         public DateTime NewEntryDate
         {
             get => _newEntryDate;
@@ -62,32 +62,32 @@ namespace ChronoTally.ViewModels
 
         private bool CanAddEntry(object parameter)
         {
-            // Add validation logic here if needed
             return true;
         }
 
         private void AddEntry(object parameter)
         {
-            // Check if StartTimeTextBox, FinishTimeTextBox, and DescriptionTextBox are bindable properties in your XAML
-            // For simplicity, assuming these are TextBox controls bound to ViewModel properties in the XAML
+          
             var newEntry = new WorkEntry
             {
                 Date = NewEntryDate,
-                StartTime = TimeSpan.Parse("08:00"), // Replace with actual parsing logic based on your UI bindings
-                FinishTime = TimeSpan.Parse("17:00"), // Replace with actual parsing logic based on your UI bindings
-                Description = "Sample description" // Replace with actual binding from DescriptionTextBox.Text
+                StartTime = TimeSpan.Parse("08:00"), 
+                FinishTime = TimeSpan.Parse("17:00"), 
+                Description = "Sample description" 
             };
 
             WorkEntries.Add(newEntry);
             TotalHours += newEntry.HoursWorked;
 
-            // Clear fields after adding entry
-            NewEntryDate = DateTime.Today; // Resets the DatePicker
-            // Optionally, reset the TextBox values if they are bindable properties
-            // StartTimeTextBox = "";
-            // FinishTimeTextBox = "";
-            // DescriptionTextBox = "";
+            NewEntryDate = DateTime.Today; 
+            
         }
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void SaveToExcel(object parameter)
         {
@@ -227,12 +227,6 @@ namespace ChronoTally.ViewModels
 
                 MessageBox.Show($"{(period == TimePeriod.Week ? "Weekly" : "Monthly")} report generated.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 
