@@ -4,11 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:ChronoTally.Converters"
     xmlns:local="clr-namespace:ChronoTally"
-    StartupUri="MainWindow.xaml">
+    StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <converters:PositiveBalanceConverter x:Key="PositiveBalanceConverter" />
             <converters:NegativeBalanceConverter x:Key="NegativeBalanceConverter" />
+            <converters:ZeroBalanceConverter x:Key="ZeroBalanceConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

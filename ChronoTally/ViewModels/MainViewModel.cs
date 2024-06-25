@@ -11,6 +11,19 @@ namespace ChronoTally.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private ObservableCollection<WorkEntry> _dailyEntries;
+        public ObservableCollection<WorkEntry> DailyEntries
+        {
+            get { return _dailyEntries; }
+            set
+            {
+                _dailyEntries = value;
+                OnPropertyChanged(nameof(DailyEntries));
+            }
+        }
+
         private DateTime _newEntryDate = DateTime.Today;
         public DateTime NewEntryDate
         {
@@ -44,7 +57,7 @@ namespace ChronoTally.ViewModels
             }
         }
 
-        private string _descriptionInput = "wat u did";
+        private string _descriptionInput = "Work tasks";
         public string DescriptionInput
         {
             get => _descriptionInput;
@@ -55,21 +68,16 @@ namespace ChronoTally.ViewModels
             }
         }
 
-        private ObservableCollection<WorkEntry> _dailyEntries = new ObservableCollection<WorkEntry>();
-        public ObservableCollection<WorkEntry> DailyEntries
-        {
-            get => _dailyEntries;
-            set
-            {
-                _dailyEntries = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand AddEntryCommand { get; }
+        public ICommand AddEntryCommand { get; set; }
 
         public MainViewModel()
         {
+            DailyEntries = new ObservableCollection<WorkEntry>
+            {
+                new WorkEntry { Date = DateTime.Now, StartTime = TimeSpan.FromHours(9), EndTime = TimeSpan.FromHours(17), Description = "Work", Value = 8 },
+                new WorkEntry { Date = DateTime.Now.AddDays(-1), StartTime = TimeSpan.FromHours(9), EndTime = TimeSpan.FromHours(17), Description = "Meeting", Value = 8 }
+            };
+
             AddEntryCommand = new RelayCommand(AddEntry, CanAddEntry);
         }
 
@@ -136,8 +144,6 @@ namespace ChronoTally.ViewModels
             DailyEntries = balanceEntries;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -164,5 +170,17 @@ namespace ChronoTally.ViewModels
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
         }
+    }
+
+    public class WorkEntry
+    {
+        public DateTime Date { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
+        public string Description { get; set; }
+        public decimal Value { get; set; }
+        public bool IsBalanceEntry { get; set; }
+
+        public double HoursWorked => (EndTime - StartTime).TotalHours;
     }
 }
