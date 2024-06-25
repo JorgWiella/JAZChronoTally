@@ -80,8 +80,10 @@ namespace ChronoTally.ViewModels
 
             AddEntryCommand = new RelayCommand(AddEntry, CanAddEntry);
         }
-
-        private bool CanAddEntry(object parameter) => true;
+        private bool CanAddEntry(object parameter)
+        {
+            return TimeSpan.TryParse(StartTimeInput, out _) && TimeSpan.TryParse(FinishTimeInput, out _);
+        }
 
         private void AddEntry(object parameter)
         {
@@ -89,9 +91,6 @@ namespace ChronoTally.ViewModels
             {
                 return;
             }
-
-            startTime = new TimeSpan(startTime.Hours, startTime.Minutes, 0);
-            endTime = new TimeSpan(endTime.Hours, endTime.Minutes, 0);
 
             var newEntry = new WorkEntry
             {
@@ -101,6 +100,10 @@ namespace ChronoTally.ViewModels
                 Description = DescriptionInput
             };
 
+            startTime = new TimeSpan(startTime.Hours, startTime.Minutes, 0);
+            endTime = new TimeSpan(endTime.Hours, endTime.Minutes, 0);
+
+
             DailyEntries.Add(newEntry);
             UpdateWeeklyAndMonthlyTotals();
 
@@ -108,6 +111,7 @@ namespace ChronoTally.ViewModels
             StartTimeInput = string.Empty;
             FinishTimeInput = string.Empty;
             DescriptionInput = string.Empty;
+
         }
 
         private void UpdateWeeklyAndMonthlyTotals()
@@ -157,18 +161,17 @@ namespace ChronoTally.ViewModels
 
         public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
         {
-            _execute = execute;
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }
+        public bool CanExecute(object? parameter) => _canExecute == null || _canExecute(parameter);
 
-        public bool CanExecute(object parameter) => _canExecute == null || _canExecute(parameter);
-
-        public void Execute(object parameter) => _execute(parameter);
+        public void Execute(object? parameter) => _execute(parameter);
 
         public event EventHandler CanExecuteChanged
         {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
         }
     }
 

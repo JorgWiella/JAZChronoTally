@@ -12,7 +12,7 @@ namespace ChronoTally
         {
             base.OnStartup(e);
             MainWindow mainWindow = new MainWindow();
-            mainWindow.DataContext = new MainViewModel(); 
+            //mainWindow.DataContext = new MainViewModel(); 
             mainWindow.Show();
         }
     }

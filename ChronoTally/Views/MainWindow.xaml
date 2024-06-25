@@ -14,6 +14,7 @@
         <local:PositiveBalanceConverter x:Key="PositiveBalanceConverter" />
         <local:NegativeBalanceConverter x:Key="NegativeBalanceConverter" />
         <local:ZeroBalanceConverter x:Key="ZeroBalanceConverter" />
+
         <Style x:Key="PlaceholderTextBox" TargetType="TextBox">
             <Setter Property="Foreground" Value="Gray" />
             <Setter Property="Text" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
@@ -31,13 +32,16 @@
         <Style x:Key="PositiveBalanceStyle" TargetType="DataGridRow">
             <Setter Property="Background" Value="LightGreen" />
         </Style>
+
         <Style x:Key="NegativeBalanceStyle" TargetType="DataGridRow">
             <Setter Property="Background" Value="LightCoral" />
         </Style>
+
         <Style x:Key="ZeroBalanceStyle" TargetType="DataGridRow">
             <Setter Property="Background" Value="LightBlue" />
         </Style>
     </Window.Resources>
+
     <Window.DataContext>
         <viewModels:MainViewModel />
     </Window.DataContext>
@@ -55,13 +59,19 @@
             Orientation="Horizontal">
             <TextBlock VerticalAlignment="Center" Text="Date: " />
             <DatePicker SelectedDate="{Binding NewEntryDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock VerticalAlignment="Center" Text=" From: " MinWidth="20" />
+            <TextBlock
+                MinWidth="20"
+                VerticalAlignment="Center"
+                Text=" From: " />
             <TextBox
                 MinWidth="70"
                 VerticalContentAlignment="Center"
                 Style="{StaticResource PlaceholderTextBox}"
                 Text="{Binding StartTimeInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock VerticalAlignment="Center" Text=" To:" MinWidth="20" />
+            <TextBlock
+                MinWidth="20"
+                VerticalAlignment="Center"
+                Text=" To:" />
             <TextBox
                 MinWidth="70"
                 VerticalContentAlignment="Center"
@@ -114,19 +124,18 @@
                     Binding="{Binding Value}"
                     Header="Value" />
             </DataGrid.Columns>
+
+            <!--  DataGridRow Style and Triggers  -->
             <DataGrid.Resources>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsBalanceEntry}" Value="True">
-                            <Setter Property="Background" Value="LightGray" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsBalanceEntry}" Value="True">
+                        <DataTrigger Binding="{Binding IsBalanceEntry}" Value="False">
                             <Setter Property="Background" Value="{Binding Value, Converter={StaticResource PositiveBalanceConverter}, TargetNullValue={StaticResource PositiveBalanceStyle}}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsBalanceEntry}" Value="True">
+                        <DataTrigger Binding="{Binding IsBalanceEntry}" Value="False">
                             <Setter Property="Background" Value="{Binding Value, Converter={StaticResource NegativeBalanceConverter}, TargetNullValue={StaticResource NegativeBalanceStyle}}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsBalanceEntry}" Value="True">
+                        <DataTrigger Binding="{Binding IsBalanceEntry}" Value="False">
                             <Setter Property="Background" Value="{Binding Value, Converter={StaticResource ZeroBalanceConverter}, TargetNullValue={StaticResource ZeroBalanceStyle}}" />
                         </DataTrigger>
                     </Style.Triggers>
