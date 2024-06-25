@@ -1,21 +1,16 @@
-﻿using System;
+﻿using ChronoTally.Models;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using OfficeOpenXml;
-using System.IO;
-using System.Linq;
-using System.Globalization;
-using System.Windows;
-using ChronoTally.Models;
 
 namespace ChronoTally.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<WorkEntry> WorkEntries { get; set; } = new ObservableCollection<WorkEntry>();
-
         private DateTime _newEntryDate = DateTime.Today;
         public DateTime NewEntryDate
         {
@@ -27,213 +22,126 @@ namespace ChronoTally.ViewModels
             }
         }
 
-        private double _totalHours;
-        public double TotalHours
+        private string _startTimeInput = "08:40";
+        public string StartTimeInput
         {
-            get => _totalHours;
+            get => _startTimeInput;
             set
             {
-                _totalHours = value;
+                _startTimeInput = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(TimeBalance));
             }
         }
 
-        public string TimeBalance => $"Total Balance: {TotalHours} hours";
+        private string _finishTimeInput = "17:20";
+        public string FinishTimeInput
+        {
+            get => _finishTimeInput;
+            set
+            {
+                _finishTimeInput = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _descriptionInput = "wat u did";
+        public string DescriptionInput
+        {
+            get => _descriptionInput;
+            set
+            {
+                _descriptionInput = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<WorkEntry> _dailyEntries = new ObservableCollection<WorkEntry>();
+        public ObservableCollection<WorkEntry> DailyEntries
+        {
+            get => _dailyEntries;
+            set
+            {
+                _dailyEntries = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ICommand AddEntryCommand { get; }
-        public ICommand SaveToExcelCommand { get; }
-        public ICommand LoadFromExcelCommand { get; }
-        public ICommand GenerateWeeklyReportCommand { get; }
-        public ICommand GenerateMonthlyReportCommand { get; }
-
-        private const string excelFilePath = "WorkReport.xlsx";
 
         public MainViewModel()
         {
             AddEntryCommand = new RelayCommand(AddEntry, CanAddEntry);
-            SaveToExcelCommand = new RelayCommand(SaveToExcel);
-            LoadFromExcelCommand = new RelayCommand(LoadFromExcel);
-            GenerateWeeklyReportCommand = new RelayCommand(GenerateWeeklyReport);
-            GenerateMonthlyReportCommand = new RelayCommand(GenerateMonthlyReport);
-
-            OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
         }
 
-        private bool CanAddEntry(object parameter)
-        {
-            return true;
-        }
+        private bool CanAddEntry(object parameter) => true;
 
         private void AddEntry(object parameter)
         {
-          
+            if (!TimeSpan.TryParse(StartTimeInput, out TimeSpan startTime) || !TimeSpan.TryParse(FinishTimeInput, out TimeSpan endTime))
+            {
+                return;
+            }
+
+            startTime = new TimeSpan(startTime.Hours, startTime.Minutes, 0);
+            endTime = new TimeSpan(endTime.Hours, endTime.Minutes, 0);
+
             var newEntry = new WorkEntry
             {
                 Date = NewEntryDate,
-                StartTime = TimeSpan.Parse("08:00"), 
-                FinishTime = TimeSpan.Parse("17:00"), 
-                Description = "Sample description" 
+                StartTime = startTime,
+                EndTime = endTime,
+                Description = DescriptionInput
             };
 
-            WorkEntries.Add(newEntry);
-            TotalHours += newEntry.HoursWorked;
+            DailyEntries.Add(newEntry);
+            UpdateWeeklyAndMonthlyTotals();
 
-            NewEntryDate = DateTime.Today; 
-            
+            NewEntryDate = DateTime.Today;
+            StartTimeInput = string.Empty;
+            FinishTimeInput = string.Empty;
+            DescriptionInput = string.Empty;
         }
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+
+        private void UpdateWeeklyAndMonthlyTotals()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            var groupedByWeek = DailyEntries
+                .Where(e => !e.IsBalanceEntry)
+                .GroupBy(e => CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(e.Date, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+                .OrderBy(g => g.Key);
+
+            var balanceEntries = new ObservableCollection<WorkEntry>();
+
+            foreach (var group in groupedByWeek)
+            {
+                foreach (var entry in group)
+                {
+                    balanceEntries.Add(entry);
+                }
+
+                var weeklyHours = group.Sum(e => e.HoursWorked);
+                balanceEntries.Add(new WorkEntry
+                {
+                    IsBalanceEntry = true,
+                    Description = $"Weekly Balance: {weeklyHours:F2} hours"
+                });
+            }
+
+            var monthlyHours = DailyEntries.Where(e => !e.IsBalanceEntry).Sum(e => e.HoursWorked);
+            balanceEntries.Add(new WorkEntry
+            {
+                IsBalanceEntry = true,
+                Description = $"Monthly Balance: {monthlyHours:F2} hours"
+            });
+
+            DailyEntries = balanceEntries;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void SaveToExcel(object parameter)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            FileInfo fileInfo = new FileInfo(excelFilePath);
-            using (ExcelPackage package = new ExcelPackage(fileInfo))
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Count == 0 ? package.Workbook.Worksheets.Add("WorkReport") : package.Workbook.Worksheets[0];
-
-                if (worksheet.Dimension == null)
-                {
-                    worksheet.Cells[1, 1].Value = "Date";
-                    worksheet.Cells[1, 2].Value = "Start Time";
-                    worksheet.Cells[1, 3].Value = "Finish Time";
-                    worksheet.Cells[1, 4].Value = "Description";
-                    worksheet.Cells[1, 5].Value = "Hours Worked";
-                }
-
-                int rowCount = worksheet.Dimension?.Rows ?? 0;
-                foreach (var entry in WorkEntries)
-                {
-                    worksheet.Cells[rowCount + 1, 1].Value = entry.Date.ToString("dd/MM/yyyy");
-                    worksheet.Cells[rowCount + 1, 2].Value = entry.StartTime.ToString(@"hh\:mm");
-                    worksheet.Cells[rowCount + 1, 3].Value = entry.FinishTime.ToString(@"hh\:mm");
-                    worksheet.Cells[rowCount + 1, 4].Value = entry.Description;
-                    worksheet.Cells[rowCount + 1, 5].Value = entry.HoursWorked;
-                    rowCount++;
-                }
-
-                package.Save();
-            }
-
-            MessageBox.Show("Entries saved to Excel.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        private void LoadFromExcel(object parameter)
-        {
-            FileInfo fileInfo = new FileInfo(excelFilePath);
-            if (!fileInfo.Exists)
-            {
-                MessageBox.Show("No Excel file found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            WorkEntries.Clear();
-            TotalHours = 0;
-
-            using (ExcelPackage package = new ExcelPackage(fileInfo))
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
-                {
-                    var date = DateTime.ParseExact(worksheet.Cells[row, 1].Text, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    var startTime = TimeSpan.ParseExact(worksheet.Cells[row, 2].Text, @"hh\:mm", CultureInfo.InvariantCulture);
-                    var finishTime = TimeSpan.ParseExact(worksheet.Cells[row, 3].Text, @"hh\:mm", CultureInfo.InvariantCulture);
-                    var description = worksheet.Cells[row, 4].Text;
-
-                    var entry = new WorkEntry
-                    {
-                        Date = date,
-                        StartTime = startTime,
-                        FinishTime = finishTime,
-                        Description = description
-                    };
-
-                    WorkEntries.Add(entry);
-                    TotalHours += entry.HoursWorked;
-                }
-            }
-
-            MessageBox.Show("Data loaded from Excel.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void GenerateWeeklyReport(object parameter)
-        {
-            GenerateReport(TimePeriod.Week);
-        }
-
-        private void GenerateMonthlyReport(object parameter)
-        {
-            GenerateReport(TimePeriod.Month);
-        }
-
-        private void GenerateReport(TimePeriod period)
-        {
-            FileInfo fileInfo = new FileInfo(excelFilePath);
-            if (!fileInfo.Exists)
-            {
-                MessageBox.Show("No Excel file found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            using (ExcelPackage package = new ExcelPackage(fileInfo))
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                var entries = worksheet.Cells[2, 1, worksheet.Dimension.End.Row, 5]
-                                .Select(cell => new
-                                {
-                                    Date = DateTime.ParseExact(worksheet.Cells[cell.Start.Row, 1].Text, "dd/MM/yyyy", CultureInfo.InvariantCulture),
-                                    HoursWorked = Convert.ToDouble(worksheet.Cells[cell.Start.Row, 5].Value)
-                                })
-                                .ToList();
-
-                IEnumerable<IGrouping<object, dynamic>> groupedEntries = null;
-                if (period == TimePeriod.Week)
-                {
-                    groupedEntries = entries.GroupBy(e => (object)CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(e.Date, CalendarWeekRule.FirstDay, DayOfWeek.Monday));
-                }
-                else if (period == TimePeriod.Month)
-                {
-                    groupedEntries = entries.GroupBy(e => (object)new { e.Date.Year, e.Date.Month });
-                }
-
-                string reportFilePath = period == TimePeriod.Week ? "WeeklyReport.xlsx" : "MonthlyReport.xlsx";
-                FileInfo reportFile = new FileInfo(reportFilePath);
-                using (ExcelPackage reportPackage = new ExcelPackage(reportFile))
-                {
-                    ExcelWorksheet reportSheet = reportPackage.Workbook.Worksheets.Count == 0 ? reportPackage.Workbook.Worksheets.Add("Report") : reportPackage.Workbook.Worksheets[0];
-
-                    int row = 1;
-                    foreach (var group in groupedEntries)
-                    {
-                        if (period == TimePeriod.Week)
-                        {
-                            reportSheet.Cells[row, 1].Value = $"Week {group.Key}";
-                        }
-                        else if (period == TimePeriod.Month)
-                        {
-                            var key = (dynamic)group.Key;
-                            reportSheet.Cells[row, 1].Value = $"{key.Year}-{key.Month}";
-                        }
-                        reportSheet.Cells[row, 2].Value = group.Sum(e => e.HoursWorked);
-                        row++;
-                    }
-
-                    reportPackage.Save();
-                }
-
-                MessageBox.Show($"{(period == TimePeriod.Week ? "Weekly" : "Monthly")} report generated.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-    }
-
-    public enum TimePeriod
-    {
-        Week,
-        Month
     }
 
     public class RelayCommand : ICommand
@@ -247,15 +155,9 @@ namespace ChronoTally.ViewModels
             _canExecute = canExecute;
         }
 
-        public bool CanExecute(object parameter)
-        {
-            return _canExecute == null || _canExecute(parameter);
-        }
+        public bool CanExecute(object parameter) => _canExecute == null || _canExecute(parameter);
 
-        public void Execute(object parameter)
-        {
-            _execute(parameter);
-        }
+        public void Execute(object parameter) => _execute(parameter);
 
         public event EventHandler CanExecuteChanged
         {

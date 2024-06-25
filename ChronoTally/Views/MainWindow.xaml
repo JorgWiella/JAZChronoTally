@@ -9,145 +9,132 @@
     Background="#333333"
     FontSize="14"
     Foreground="White">
+    <Window.Resources>
+        <Style x:Key="PlaceholderTextBox" TargetType="TextBox">
+            <Setter Property="Foreground" Value="Gray" />
+            <Setter Property="Text" Value="{Binding Text, RelativeSource={RelativeSource Self}}" />
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="Foreground" Value="Black" />
+                    <Setter Property="Text" Value="" />
+                </Trigger>
+                <Trigger Property="IsFocused" Value="False">
+                    <Setter Property="Foreground" Value="Gray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="PositiveBalanceStyle" TargetType="DataGridRow">
+            <Setter Property="Background" Value="LightGreen"/>
+        </Style>
+        <Style x:Key="NegativeBalanceStyle" TargetType="DataGridRow">
+            <Setter Property="Background" Value="LightCoral"/>
+        </Style>
+        <Style x:Key="ZeroBalanceStyle" TargetType="DataGridRow">
+            <Setter Property="Background" Value="LightBlue"/>
+        </Style>
+    </Window.Resources>
+
 
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
 
-    <Window.Resources>
-        <!--  Styles for DataGridCell and DataGridColumnHeaderStyle  -->
-        <Style TargetType="DataGridCell">
-            <Setter Property="Foreground" Value="#333333" />
-        </Style>
-
-        <Style x:Key="DataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#555555" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="BorderBrush" Value="#555555" />
-            <Setter Property="BorderThickness" Value="0,0,1,1" />
-            <Setter Property="Padding" Value="5" />
-            <Setter Property="FontSize" Value="13" />
-        </Style>
-    </Window.Resources>
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <!--  Column for input controls and DataGrid  -->
             <ColumnDefinition />
-            <!--  Column for buttons and TimeBalance  -->
         </Grid.ColumnDefinitions>
 
         <!--  Left Column: Input Controls and DataGrid  -->
-        <StackPanel
-            Grid.Column="0"
-            Margin="10"
-            Orientation="Vertical">
+        <StackPanel Grid.Column="0" Margin="10" Orientation="Vertical">
             <StackPanel Margin="10,10,10,30" Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="Date: " />
-                <DatePicker
-                    Name="DateDatePicker"
-                    VerticalContentAlignment="Center"
-                    Language="en-DE"
-                    SelectedDate="{Binding NewEntryDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <DatePicker SelectedDate="{Binding NewEntryDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock VerticalAlignment="Center" Text="      From: " />
-                <TextBox
-                    Name="StartTimeTextBox"
-                    MinWidth="70"
-                    VerticalContentAlignment="Center" />
-                <TextBlock
-                    Margin="10,0,5,0"
-                    VerticalAlignment="Center"
-                    Text="To:" />
-                <TextBox
-                    Name="FinishTimeTextBox"
-                    MinWidth="70"
-                    VerticalContentAlignment="Center" />
-                <TextBlock
-                    Margin="10,0,5,0"
-                    VerticalAlignment="Center"
-                    Text="Description:" />
-                <TextBox
-                    Name="DescriptionTextBox"
-                    MinWidth="200"
-                    VerticalContentAlignment="Center" />
-                <Button
-                    MinWidth="100"
-                    Margin="10,0,0,0"
-                    Command="{Binding AddEntryCommand}"
-                    Content="Add Entry" />
-            </StackPanel>
+                <TextBox MinWidth="70"
+                         VerticalContentAlignment="Center"
+                         Text="{Binding StartTimeInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource PlaceholderTextBox}" />
 
-            <!--  DataGrid for displaying entries  -->
+                <TextBlock VerticalAlignment="Center" Text="To:" />
+                <TextBox MinWidth="70"
+                         VerticalContentAlignment="Center"
+                         Text="{Binding FinishTimeInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource PlaceholderTextBox}" />
+
+                <TextBlock VerticalAlignment="Center" Text="Description:" />
+                <TextBox MinWidth="200"
+                         VerticalContentAlignment="Center"
+                         Text="{Binding DescriptionInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource PlaceholderTextBox}" />
+
+                <Button MinWidth="100" Margin="10,0,0,0" Command="{Binding AddEntryCommand}" Content="Add Entry" />
+            </StackPanel>
             <DataGrid
-                Margin="10,10,10,10"
-                AutoGenerateColumns="False"
-                ItemsSource="{Binding WorkEntries}"
-                SelectionChanged="DataGrid_SelectionChanged">
+    Margin="10"
+    AutoGenerateColumns="False"
+    ItemsSource="{Binding DailyEntries}"
+    AlternatingRowBackground="LightGray"
+    HeadersVisibility="Column">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsBalanceEntry}" Value="True">
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsBalanceEntry}" Value="True"/>
+                                    <Condition Binding="{Binding Value, Converter={StaticResource PositiveBalanceConverter}}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Style" Value="{StaticResource PositiveBalanceStyle}"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsBalanceEntry}" Value="True"/>
+                                    <Condition Binding="{Binding Value, Converter={StaticResource NegativeBalanceConverter}}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Style" Value="{StaticResource NegativeBalanceStyle}"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsBalanceEntry}" Value="True"/>
+                                    <Condition Binding="{Binding Value, Converter={StaticResource PositiveBalanceConverter}}" Value="False"/>
+                                    <Condition Binding="{Binding Value, Converter={StaticResource NegativeBalanceConverter}}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Style" Value="{StaticResource ZeroBalanceStyle}"/>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Resources>
                 <DataGrid.Columns>
                     <DataGridTextColumn
-                        Width="Auto"
-                        MinWidth="100"
-                        Binding="{Binding Date}"
-                        Header="Date" />
+            Width="Auto"
+            MinWidth="100"
+            Binding="{Binding Date, StringFormat={}{0:dd/MM/yyyy}}"
+            Header="Date" />
                     <DataGridTextColumn
-                        Width="Auto"
-                        MinWidth="80"
-                        Binding="{Binding StartTime}"
-                        Header="Started" />
+            Width="Auto"
+            MinWidth="80"
+            Binding="{Binding StartTime, StringFormat={}{0:hh\\:mm}}"
+            Header="Started" />
                     <DataGridTextColumn
-                        Width="Auto"
-                        MinWidth="80"
-                        Binding="{Binding FinishTime}"
-                        Header="Finished" />
+            Width="Auto"
+            MinWidth="80"
+            Binding="{Binding EndTime, StringFormat={}{0:hh\\:mm}}"
+            Header="Finished" />
                     <DataGridTextColumn
-                        Width="*"
-                        MinWidth="263"
-                        Binding="{Binding Description}"
-                        Header="Description" />
+            Width="*"
+            MinWidth="263"
+            Binding="{Binding Description}"
+            Header="Description" />
                     <DataGridTextColumn
-                        Width="Auto"
-                        MinWidth="100"
-                        Binding="{Binding HoursWorked}"
-                        Header="Hours Worked" />
+            Width="Auto"
+            MinWidth="100"
+            Binding="{Binding Value}"
+            Header="Value" />
                 </DataGrid.Columns>
-                <DataGrid.ColumnHeaderStyle>
-                    <Style BasedOn="{StaticResource DataGridColumnHeaderStyle}" TargetType="DataGridColumnHeader" />
-                </DataGrid.ColumnHeaderStyle>
             </DataGrid>
-        </StackPanel>
-
-        <!--  Right Column: Buttons and TimeBalance  -->
-        <StackPanel
-            Grid.Column="1"
-            Margin="10"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
-            <Button
-                MinWidth="120"
-                Margin="0,0,10,10"
-                Command="{Binding SaveToExcelCommand}"
-                Content="Save to Excel" />
-            <Button
-                MinWidth="120"
-                Margin="0,0,10,10"
-                Command="{Binding LoadFromExcelCommand}"
-                Content="Load from Excel" />
-            <Button
-                MinWidth="120"
-                Margin="0,0,10,10"
-                Command="{Binding GenerateWeeklyReportCommand}"
-                Content="Weekly Report" />
-            <Button
-                MinWidth="120"
-                Margin="0,0,10,10"
-                Command="{Binding GenerateMonthlyReportCommand}"
-                Content="Monthly Report" />
-            <TextBlock
-                Margin="10,10,10,10"
-                FontSize="17"
-                Text="{Binding TimeBalance}" />
         </StackPanel>
     </Grid>
 </Window>
